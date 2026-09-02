@@ -1,4 +1,414 @@
-<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8">
-<meta http-equiv="refresh" content="0; url=rules/">
-<title>ATLAS RP</title></head>
-<body><a href="rules/">الدخول إلى القوانين</a></body></html>
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>قوانين الرول بلاي</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Tajawal:wght@400;500;700;900&display=swap');
+
+  :root{
+    --bg-0:#0a0505;
+    --bg-1:#120808;
+    --card:#170a0a;
+    --card-hover:#1f0d0d;
+    --line:#3a1414;
+    --red-1:#e8262c;
+    --red-2:#ff4d4d;
+    --red-glow: rgba(232,38,44,.35);
+    --text-hi:#f5e9e9;
+    --text-lo:#a98a8a;
+    --code-bg:#2a0e0e;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(ellipse 900px 500px at 15% -10%, rgba(232,38,44,.14), transparent 60%),
+      radial-gradient(ellipse 900px 600px at 100% 10%, rgba(232,38,44,.10), transparent 55%),
+      var(--bg-0);
+    color:var(--text-hi);
+    font-family:'Tajawal','Cairo',sans-serif;
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* ---------- HERO ---------- */
+  header{
+    padding:76px 24px 48px;
+    text-align:center;
+    position:relative;
+    border-bottom:1px solid var(--line);
+    overflow:hidden;
+  }
+  header::before{
+    content:"";
+    position:absolute; inset:0;
+    background:
+      linear-gradient(180deg, transparent 0%, var(--bg-0) 100%),
+      repeating-linear-gradient(115deg, rgba(232,38,44,.05) 0 2px, transparent 2px 40px);
+    pointer-events:none;
+  }
+  .eyebrow{
+    position:relative;
+    font-size:15px;
+    letter-spacing:.5px;
+    color:var(--red-2);
+    font-weight:700;
+    margin-bottom:14px;
+  }
+  h1{
+    position:relative;
+    font-family:'Cairo',sans-serif;
+    font-weight:800;
+    font-size:clamp(34px,6vw,64px);
+    margin:0;
+    line-height:1.25;
+    background:linear-gradient(180deg,#fff 10%, var(--red-2) 130%);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    text-shadow:0 0 60px var(--red-glow);
+  }
+  .sub{
+    position:relative;
+    margin:18px auto 0;
+    max-width:560px;
+    color:var(--text-lo);
+    font-size:17px;
+    line-height:1.9;
+  }
+  .toast{
+    position:fixed;
+    bottom:34px;
+    left:50%;
+    transform:translateX(-50%) translateY(20px);
+    background:linear-gradient(135deg,#ff2b2b,#a10d10);
+    color:#fff;
+    padding:14px 28px;
+    border-radius:14px;
+    font-weight:700;
+    font-size:16px;
+    box-shadow:0 10px 40px rgba(232,38,44,.5);
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .25s ease, transform .25s ease;
+    z-index:999;
+    white-space:nowrap;
+    max-width:90vw;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+
+  /* ---------- SEARCH ---------- */
+  .search-wrap{
+    max-width:640px;
+    margin:-28px auto 0;
+    padding:0 24px;
+    position:relative;
+    z-index:5;
+  }
+  .search-wrap input{
+    width:100%;
+    padding:18px 22px;
+    font-size:17px;
+    font-family:inherit;
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:16px;
+    color:var(--text-hi);
+    outline:none;
+    box-shadow:0 20px 50px rgba(0,0,0,.5);
+    transition:border-color .2s ease, box-shadow .2s ease;
+  }
+  .search-wrap input::placeholder{ color:var(--text-lo); }
+  .search-wrap input:focus{
+    border-color:var(--red-1);
+    box-shadow:0 0 0 4px var(--red-glow);
+  }
+
+  /* ---------- SECTIONS ---------- */
+  main{ max-width:1180px; margin:0 auto; padding:56px 24px 100px; }
+  .section-title{
+    display:flex;
+    align-items:baseline;
+    gap:14px;
+    margin:64px 0 26px;
+  }
+  .section-title:first-of-type{ margin-top:0; }
+  .section-title h2{
+    font-family:'Cairo',sans-serif;
+    font-size:26px;
+    font-weight:800;
+    color:#fff;
+    margin:0;
+  }
+  .section-title span{
+    color:var(--text-lo);
+    font-size:14px;
+  }
+  .section-title::after{
+    content:"";
+    flex:1;
+    height:1px;
+    background:linear-gradient(90deg, var(--line), transparent);
+  }
+
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(270px, 1fr));
+    gap:16px;
+  }
+
+  .rule{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:22px 22px 20px;
+    cursor:pointer;
+    position:relative;
+    text-align:right;
+    transition:transform .15s ease, border-color .15s ease, background .15s ease, box-shadow .15s ease;
+    -webkit-tap-highlight-color:transparent;
+    user-select:none;
+  }
+  .rule:hover{
+    background:var(--card-hover);
+    border-color:var(--red-1);
+    transform:translateY(-3px);
+    box-shadow:0 14px 34px rgba(232,38,44,.18);
+  }
+  .rule:active{ transform:translateY(0) scale(.98); }
+
+  .rule .code{
+    display:inline-block;
+    background:var(--code-bg);
+    color:var(--red-2);
+    font-family:'Cairo',sans-serif;
+    font-weight:800;
+    font-size:13px;
+    letter-spacing:.5px;
+    padding:4px 12px;
+    border-radius:999px;
+    border:1px solid rgba(232,38,44,.35);
+    margin-bottom:14px;
+    direction:ltr;
+  }
+  .rule .text{
+    font-size:22px;
+    font-weight:700;
+    line-height:1.55;
+    color:var(--text-hi);
+  }
+  .rule .copy-hint{
+    margin-top:14px;
+    font-size:12.5px;
+    color:var(--text-lo);
+    display:flex;
+    align-items:center;
+    gap:6px;
+  }
+  .rule .copy-hint svg{ width:14px; height:14px; opacity:.7; }
+
+  .no-results{
+    text-align:center;
+    color:var(--text-lo);
+    padding:60px 0;
+    font-size:18px;
+    display:none;
+  }
+
+  footer{
+    text-align:center;
+    padding:36px 24px 60px;
+    color:var(--text-lo);
+    font-size:13.5px;
+    border-top:1px solid var(--line);
+  }
+  footer a{ color:var(--red-2); text-decoration:none; }
+
+  @media (max-width:480px){
+    header{ padding:56px 18px 40px; }
+    .rule .text{ font-size:19px; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ transition:none !important; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">مرجع القوانين</div>
+  <h1>قوانين الرول بلاي</h1>
+  <p class="sub">اضغط على أي قانون لنسخ نصه مباشرة إلى الحافظة — جاهز للصق فورًا.</p>
+</header>
+
+<div class="search-wrap">
+  <input type="text" id="search" placeholder="ابحث عن قانون بالكود أو بالوصف...">
+</div>
+
+<main>
+  <div id="content"></div>
+  <div class="no-results" id="noResults">لا توجد نتائج مطابقة.</div>
+</main>
+
+<footer>
+  مرجع قوانين الرول بلاي — اضغط أي بطاقة لنسخ نصها
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const RULES = [
+      ["ATA", "الهجوم على شخصية لاعب آخر بدون سبب رول بلاي مقنع / نقل ملكية شخص لشخص آخر"],
+      ["Arson", "إشعال الحرائق بدون إشراف إدمن أو وجود فرقة إطفاء"],
+      ["AE", "الكذب على أدمن"],
+      ["AFK", "الابتعاد عن الجهاز أثناء موقف رول بلاي فعّال بدون سبب"],
+      ["AA", "استخدام الأدمن لرتبته لمصلحته الشخصية / نشر إعلانات كاذبة"],
+      ["AC", "استخدام أكثر من حساب في نفس الفاكشن"],
+      ["AFking", "قانون الأفك أو ترك الجهاز لفترة للتهرب من موقف رول بلاي"],
+      ["APG", "استخدام امتيازات الأدمن بشكل غير واقعي وغير صالح"],
+      ["AR", "الانضمام لأكثر من فاكشن في نفس الوقت"],
+      ["AFRP", "الجري والقفز في نفس الوقت بشكل غير واقعي"],
+      ["AFrun", "قانون الحرائق: أن يكون تحت إشراف أدمن أو وجود وحدة إطفاء"],
+      ["DII", "تبديل الأسلحة في اليد بدون رول بلاي / الجري والقفز في نفس الوقت"],
+      ["DP", "القتال دون رول بلاي وبايبلايد فقط"],
+      ["BRAWLS", "القتال دون رول بلاي وبايبلايد فقط"],
+      ["CD", "تطوير الشخصية بشكل غير واقعي"],
+      ["CCTV", "تدمير أو تعطيل كاميرات المراقبة بدون سبب"],
+      ["CA", "استخدام جليتشات بالأسلحة / تدمير حياة الشخصية"],
+      ["CJ", "قانون سرقة المحلات التجارية / استخدام جليتشات بالأسلحة"],
+      ["CP", "قانون قتل الشخص المسروق منه"],
+      ["Corruption", "قانون الفساد المالي داخل الفاكشنات الحكومية"],
+      ["CK", "إعدام الشخصية بشكل نهائي من قبل الإدارة"],
+      ["CDM", "قتل الناس بالمركبة بدون سبب"],
+      ["CR", "الجري من جميع النواحي لتفادي إطلاق النار / قانون قتل الشخص المسروق"],
+      ["DRP", "حياة مقززة / التصرف بشكل غير واقعي"],
+      ["DM", "القتل بدون سبب رول بلاي"],
+      ["DFA", "استخدام مخدرات بدون رول بلاي"],
+      ["DFL", "تدمير حياة الشخصية مثل الانتحار بدون سبب"],
+      ["DOG", "شارة بدون دوري أو دوري بدون شارة"],
+      ["DB", "دعس العامة بدون سبب أو إطلاق نار من السيارة أثناء القيادة"],
+      ["Exploiting", "استخدام جليتشات"],
+      ["FRP", "عدم مقدرة اللاعب على تقمص دور الشخصية"],
+      ["CFA", "استخراج السلاح من حزامك بدون رول بلاي"],
+      ["GR", "القاعدة الذهبية: احترام اللاعبين داخل وخارج الرول بلاي"],
+      ["RK", "قتل ملكية الأدمن بدون استئذان / القتل بدافع الانتقام"],
+      ["RPZ", "منطقة العمل أو العيش الرول بلاي داخل السيرفر"],
+      ["RDM", "القتل العشوائي أو المتكرر بدون سبب رول بلاي"],
+      ["RTR", "الجري بدون رول بلاي بحجة التعب"],
+      ["RPAPK", "الإضرار بهيبة الرول بلاي بشكل متعمد"],
+      ["RRPC", "استخدام آر بي جي من غير أمر السلاح"],
+      ["RRAPK", "قانون التصرف بواقعية بعد الموت"],
+      ["RA", "القاعدة الذهبية: احترام اللاعبين داخل وخارج الرول بلاي / ارتكاب جرائم خطيرة أمام المقرات العامة أو الحكومية"],
+      ["IC", "شات الواقعية داخل الرول بلاي (In Character)"],
+      ["Inactivity", "قانون عدم النشاط"],
+      ["KOS", "الحقد الآربي داخل السيرفر أو خارجه"],
+      ["LTA", "الهروب من موقف رول بلاي"],
+      ["LK", "قتل داخل المدينة بدون سبب"],
+      ["LOW-RP", "رول بلاي ضعيف وغير واقعي"],
+      ["LOHR", "الكذب على الإدمن"],
+      ["LIRL", "محاولة إيقاف الآربي بدون سبب مقنع"],
+      ["MA", "تعدد الحسابات"],
+      ["MC", "الضغط بدون قصد على الماوس"],
+      ["MG", "استخدام معلومات خارج الشخصية (Metagaming) / كلبشة بدون سبب"],
+      ["NL", "حياة مقززة"],
+      ["NK", "الضرب أثناء الجري"],
+      ["NON-RP", "فعل أشياء بدون رول بلاي"],
+      ["NJ", "السرقة والقفز في المركبات المتحركة"],
+      ["NLR", "نسيان الحادثة السابقة وعدم القدرة على الانتقام (New Life Rule)"],
+      ["OOC", "شات خارج الواقعية"],
+      ["PG", "فعل أشياء خارقة للطبيعة (Powergaming)"],
+      ["PM", "قانون الرسائل الخاصة"],
+      ["PK", "فقدان الذاكرة بعد الموت"],
+      ["PD", "استفزاز الشرطة لغرض المتعة"],
+      ["PI", "قانون تفتيش الممتلكات والمقارات"],
+      ["RP", "قانون سرقة البيوت"],
+      ["SA", "نشر سيرفرات أخرى"],
+      ["SC", "استخدام اسم شخصية مشهورة"],
+      ["S&EW", "قانون الحرب والهدنة بين الفاكشنات"],
+      ["SE", "قانون تنظيم الآربي من قبل الإشراف والإدارة"],
+      ["SK", "قتل الأشخاص في الريسبون"],
+      ["SL", "حياة مقززة"],
+      ["SP", "سرقة غير واقعية"],
+      ["TK", "قتل أصدقائك بالفاكشن"],
+      ["UH", "فعل العادات المضرة بالصحة"],
+      ["VD", "قانون وصف السيارات"],
+      ["VDM", "قتل شخص بدون سبب باستخدام مركبة"],
+      ["VR", "قانون سرقة السيارة بدون تشغيل المحرك"],
+      ["VT", "قانون سرقة السيارة وتشغيل المحرك"],
+      ["WA", "إعلان خاطئ"],
+      ["WH", "القفز فوق المركبات باستخدام دراجة"]
+];
+
+const content = document.getElementById('content');
+const toast = document.getElementById('toast');
+let toastTimer = null;
+
+function copyText(text){
+  navigator.clipboard.writeText(text).then(()=>{
+    showToast('✓ تم نسخ: ' + text);
+  }).catch(()=>{
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    showToast('✓ تم نسخ: ' + text);
+  });
+}
+
+function showToast(msg){
+  toast.textContent = msg;
+  toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=> toast.classList.remove('show'), 1800);
+}
+
+function render(){
+  content.innerHTML = '';
+  const grid = document.createElement('div');
+  grid.className = 'grid';
+
+  RULES.forEach(([code, text])=>{
+    const card = document.createElement('div');
+    card.className = 'rule';
+    card.dataset.code = code.toLowerCase();
+    card.dataset.text = text;
+    card.innerHTML = `
+      <span class="code">${code}</span>
+      <div class="text">${text}</div>
+      <div class="copy-hint">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        اضغط للنسخ
+      </div>`;
+    card.addEventListener('click', ()=> copyText(text));
+    grid.appendChild(card);
+  });
+
+  content.appendChild(grid);
+}
+
+render();
+
+const search = document.getElementById('search');
+const noResults = document.getElementById('noResults');
+search.addEventListener('input', ()=>{
+  const q = search.value.trim().toLowerCase();
+  let visibleTotal = 0;
+  document.querySelectorAll('.rule').forEach(card=>{
+    const match = !q || card.dataset.code.includes(q) || card.dataset.text.toLowerCase().includes(q);
+    card.style.display = match ? '' : 'none';
+    if(match) visibleTotal++;
+  });
+  noResults.style.display = visibleTotal === 0 ? 'block' : 'none';
+});
+</script>
+
+</body>
+</html>
